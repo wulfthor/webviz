@@ -6,6 +6,13 @@
 
  var parseDate = d3.time.format("%m/%d/%Y %H:%M:%S").parse;
 
+ function showHeader () {
+     var tmpString = dataset[0]['Object_Name'];
+     var name = tmpString.split(" ")[0];
+     d3.select("body").append("h1")
+         .text(name);
+ }
+
  function generateVis () {
      console.log("into viz");
      dataset.forEach(function(d) {
@@ -37,7 +44,9 @@
     var i = 0;
      var lineFun = d3.svg.line()
          .x(function(d) { return time_scale(d.Poll_Time);})
-         .y(function(d) {return yScale(d.Response_Time_ms);})
+         .y(function(d) {
+             console.log("Y: " + d.Response_Time_ms);
+             return yScale(d.Response_Time_ms);})
          .interpolate("basis");
 
      var svg = d3.select("body").append("svg").attr({
@@ -68,8 +77,10 @@
          .append("text")
          .text(function(d) { return d.Response_Time_ms})
          .attr({
-             x: function(d) {return d.Poll_Time*3;},
-             y: function(d) {return h-d.Response_Time_ms},
+             x: function(d) {
+                 console.log("XL: " + d.Poll_Time);
+                 return time_scale((d.Poll_Time));},
+             y: function(d) {return yScale(h-Math.floor(d.Response_Time_ms))},
              "font-size":"12px",
              "font-family":"sans-serif",
              "text-anchor":"start",
@@ -103,7 +114,7 @@
          console.log(d.Poll_Time);
          console.log(d.Response_Time_ms);
      });
-
+     showHeader();
      generateVis();
 
  });
